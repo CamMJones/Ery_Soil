@@ -1,0 +1,40 @@
+setwd("C/Users/Cam/Downloads")
+dir()
+
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(broom)
+library(ggpubr)
+
+
+# skip "skips" the first row with unnecessary data
+
+soils <- read.csv("227106Q _Soil_speices.csv", skip = 1)
+
+species_summary <- soils %>%
+  group_by(Species)
+
+
+species_summary
+
+####boxplot for Ca/Mg Ratio
+
+ggplot(data=species_summary, aes(x=Species, y=Ca/Mg, group = Species)) +
+  geom_boxplot() + 
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+### trying to make a loop
+
+for (col_name in colnames(species_summary)) {
+  p <- ggplot(species_summary, aes(x = Species, y = .data[[col_name]], group = Species)) +
+    geom_boxplot(fill = "skyblue") +
+    labs(title = paste("Boxplot of", col_name), y = col_name) + # Added titles for clarity
+    theme_minimal() + # Optional: cleaned up theme
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+  print(p)
+}
